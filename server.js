@@ -1,5 +1,5 @@
 var http = require('http'),
-    faye = require('faye');
+    faye = require('faye-node.js');
 
 var bayeux = new faye.NodeAdapter({mount: '/faye', timeout: 45});
 
