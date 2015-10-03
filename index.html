@@ -26,10 +26,14 @@
 	  $('form').submit(function(){
 	    socket.emit('chat message', $('#m').val());
 	    $('#m').val('');
-	    socket.on('michael', function(msg) {
+	    socket.on('User_680', function(msg) {
 	    	console.log(msg);
 	    });
 	    return false;
+	  });
+
+	  socket.on('chat message', function(msg){
+	    $('#messages').append($('<li>').text(msg));
 	  });
 	</script>
 
