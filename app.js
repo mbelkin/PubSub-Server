@@ -4,13 +4,38 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
 
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 
 // Routing
-app.use(express.static(__dirname + '/public'));
+//app.use(express.static(__dirname + '/public'));
+
+app.post('/publish/:channel', function (req, res) {
+  var channel = req.params.channel;
+  var message = JSON.stringify(req.body);
+
+  io.emit(channel, message);
+  res.send('publishing to channel: ' + channel + '\n' + message);
+
+
+  // var message = req.body;
+  // console.log(req.body);
+  // var name = message["name"];
+  // res.send('name: ' + name);
+  //console.log(message);
+    //res.json(message);
+  //res.send(message);
+  //res.send('POST request to the homepage');
+});
+
+app.get('/', function(req, res){
+  res.sendfile('public/index.html');
+});
 
 // Chatroom
 
