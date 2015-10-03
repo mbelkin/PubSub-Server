@@ -13,11 +13,6 @@
 	subscription.then(function() {
 	  alert('Subscription is now active!');
 	});
-
-	subscription.finally(function(e) {
-		console.log('finally');
-		console.log(e);
-	});
 	
 	setTimeout(function() {
 		client.publish('/foo', {text: 'Hi there'});
