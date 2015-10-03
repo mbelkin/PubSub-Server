@@ -3,14 +3,21 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+
+// redis cache
+var pub = require('redis').createClient(6379,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: true});
+var sub = require('redis').createClient(6379,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: true});
+var redis = require('socket.io-redis');
+io.adapter(redis({pubClient: pub, subClient: sub}));
+
 var port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
 
-server.listen(port, function () {
-  console.log('Server listening at port %d', port);
-});
+// server.listen(port, function () {
+//   console.log('Server listening at port %d', port);
+// });
 
 // Routing
 //app.use(express.static(__dirname + '/public'));
@@ -21,23 +28,13 @@ app.post('/publish/:channel', function (req, res) {
 
   io.emit(channel, message);
   res.send('publishing to channel: ' + channel + '\n' + message);
-
-
-  // var message = req.body;
-  // console.log(req.body);
-  // var name = message["name"];
-  // res.send('name: ' + name);
-  //console.log(message);
-    //res.json(message);
-  //res.send(message);
-  //res.send('POST request to the homepage');
 });
 
 app.get('/', function(req, res){
   res.sendfile('public/index.html');
 });
 
-// Chatroom
+/*/ Chatroom
 
 // usernames which are currently connected to the chat
 var usernames = {};
@@ -102,3 +99,4 @@ io.on('connection', function (socket) {
     }
   });
 });
+*/
