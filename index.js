@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json())
 
 app.get('/', function(req, res){
-  res.sendfile('Public/index.html');
+  res.sendfile('index.html');
 });
 
 app.post('/publish/:channel', function (req, res) {
