@@ -22,12 +22,16 @@ server.listen(port, function () {
 // Routing
 //app.use(express.static(__dirname + '/public'));
 
-app.post('/publish/:channel', function (req, res) {
+app.post('/publish/:namespace/:channel', function (req, res) {
   var channel = req.params.channel;
+  var namespace = req.params.namespace;
   var message = JSON.stringify(req.body);
 
-  io.emit(channel, message);
-  res.send('publishing to channel: ' + channel + '\n' + message);
+  var nsp = io.of('/' + namespace);
+  nsp.emit('hi', 'everyone!');
+
+  //io.emit(channel, message);
+  res.send(namespace + ': publishing to channel: ' + channel + '\n' + message);
 });
 
 app.get('/', function(req, res){
