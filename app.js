@@ -5,8 +5,8 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
 // redis cache
-var pub = require('redis').createClient(6380,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: true});
-var sub = require('redis').createClient(6380,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: true});
+var pub = require('redis').createClient(6379,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: true});
+var sub = require('redis').createClient(6379,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: true});
 var redis = require('socket.io-redis');
 io.adapter(redis({pubClient: pub, subClient: sub}));
 
@@ -30,7 +30,7 @@ app.post('/publish/:namespace/:channel', function (req, res) {
   var nsp = io.of('/' + namespace);
   nsp.emit(channel, message);
 
-  //io.emit(channel, message);
+  io.emit(channel, message);
   res.send(namespace + ': publishing to channel: ' + channel + '\n' + message);
   
 });
