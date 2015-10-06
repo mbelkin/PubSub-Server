@@ -19,13 +19,15 @@
   //   news.emit('woot');
   // });
 
-    //var socket = io.connect('http://localhost:3000/dt');
-    var socket = io.connect('http://pubsub-server.azurewebsites.net');
+  
+    //var socket = io.connect('http://localhost:3000/dt', {transports: ['websocket']});
+    var socket = io.connect('http://pubsub-server.azurewebsites.net/dt', {transports: ['websocket']});
     socket.on('User_1208146', function (data) {
       console.log(data);
       alert('got it');
       //socket.emit('my other event', { my: 'data' });
     });
+
   </script>
 </body>
 </html>
