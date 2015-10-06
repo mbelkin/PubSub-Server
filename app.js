@@ -28,10 +28,11 @@ app.post('/publish/:namespace/:channel', function (req, res) {
   var message = JSON.stringify(req.body);
 
   var nsp = io.of('/' + namespace);
-  nsp.emit('hi', 'everyone!');
+  nsp.emit(channel, message);
 
   //io.emit(channel, message);
   res.send(namespace + ': publishing to channel: ' + channel + '\n' + message);
+  
 });
 
 app.get('/', function(req, res){
