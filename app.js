@@ -27,6 +27,8 @@ app.post('/publish/:namespace/:channel', function (req, res) {
   var namespace = req.params.namespace;
   var message = JSON.stringify(req.body);
 
+  namespace = 'false';
+
   if (namespace == 'false') {
     io.emit(channel, message);
     res.send('Publishing to channel: ' + channel + '\n' + message);
