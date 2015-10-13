@@ -4,11 +4,12 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
-// redis cache
+/*/ redis cache
 var pub = require('redis').createClient(6379,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: false});
 var sub = require('redis').createClient(6379,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: false});
 var redis = require('socket.io-redis');
 io.adapter(redis({pubClient: pub, subClient: sub}));
+*/
 
 var port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
@@ -19,31 +20,75 @@ server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 
+// handle incoming connections from clients and connect to namespaces
+io.on('connection', function(_socket) {
+    handleConnection(_socket);
+});
+
+var dt = io.of('/dt').on('connection', function (_socket) {
+    handleConnection(_socket);
+});
+
+var ot = io.of('/ot').on('connection', function (_socket) {
+    handleConnection(_socket);
+});
+
+var ht = io.of('/ht').on('connection', function (_socket) {
+    handleConnection(_socket);
+});
+
 // Routing
 //app.use(express.static(__dirname + '/public'));
 
 app.post('/publish/:namespace/:channel', function (req, res) {
-  var channel = req.params.channel;
-  var namespace = req.params.namespace;
-  var message = JSON.stringify(req.body);
-
-  namespace = 'false';
+  var channel = req.params.channel,
+      namespace = req.params.namespace,
+      message = JSON.stringify(req.body);
 
   if (namespace == 'false') {
-    io.emit(channel, message);
+    //io.emit(channel, message);
+    io.to(channel).emit(channel, message);
     res.send('Publishing to channel: ' + channel + '\n' + message);
   }
   else {
-    var nsp = io.of('/' + namespace);
-    nsp.emit(channel, message);
-    res.send(namespace + ': publishing to channel: ' + channel + '\n' + message);
+    switch (namespace) {
+      case 'dt':
+        dt.to(channel).emit(channel, message);
+        res.send(namespace + ': publishing to channel: ' + channel + '\n' + message);
+        break;
+      case 'ot':
+        ot.to(channel).emit(channel, message);
+        res.send(namespace + ': publishing to channel: ' + channel + '\n' + message);
+        break;
+      case 'ht':
+        ht.to(channel).emit(channel, message);
+        res.send(namespace + ': publishing to channel: ' + channel + '\n' + message);
+        break;
+      case 'default':
+        res.sendStatus(500);
+        res.send('unhandled namespace: ' + namespace);
+        break;
+    }
   }
-  
 });
 
 app.get('/', function(req, res){
   res.sendfile('public/index.html');
 });
+
+function handleConnection(_socket) {
+  console.log('on connection');
+    // once a client has connected, we expect to get a ping from them saying what room they want to join
+    _socket.on('subscribe', function(channel) {
+        console.log('join channel: ' + channel);
+        _socket.join(channel);
+    });
+
+    _socket.on('unsubscribe', function(channel) {
+        console.log('leave channel: ' + channel);
+        _socket.leave(channel);
+    });
+}
 
 /*/ Chatroom
 

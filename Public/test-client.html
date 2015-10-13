@@ -20,13 +20,39 @@
   // });
 
   
-    //var socket = io.connect('http://localhost:3000/dt', {transports: ['websocket']});
-    var socket = io.connect('http://pubsub-server.azurewebsites.net/dt', {transports: ['websocket']});
+    var socket = io.connect('http://localhost:3000/dt');
+    //var socket = io.connect('http://pubsub-server.azurewebsites.net/dt', {transports: ['websocket']});
+
+    // let's assume that the client page, once rendered, knows what room it wants to join
+    var channel = "User_1208146";
+
+    socket.on('connect', function() {
+       // Connected, let's sign-up for to receive messages for this room
+       console.log('connected');
+       socket.emit('subscribe', channel);
+    });
+
+    //socket.emit('unsubscribe', channel);
+
+    socket.on('dt', function(data) {
+       console.log('Incoming dt:', data);
+    });
+
+    socket.on('message', function(data) {
+       console.log('Incoming message:', data);
+    });
+
+    socket.on(channel, function(data) {
+       console.log('Incoming message on channel:', data);
+    });
+
+    /*
     socket.on('User_1208146', function (data) {
       console.log(data);
       alert('got it');
       //socket.emit('my other event', { my: 'data' });
     });
+    */
 
   </script>
 </body>
