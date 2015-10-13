@@ -43,8 +43,35 @@
     });
 
     socket.on(channel, function(data) {
-       console.log('Incoming message on channel:', data);
+       console.log('Incoming message on channel: ' + channel);
+       console.log(data);
     });
+
+    socket.on('test', function(data) {
+      console.log('Incoming message on test: ' + channel);
+      console.log(data);
+    });
+
+    socket.on('test2', function(data) {
+      console.log('Incoming message on test: ' + channel);
+      console.log(data);
+    });
+
+    function publishChannel() {
+      socket.emit('publish', JSON.stringify({
+        namespace: 'dt',
+        channel: 'User_1208146',
+        message: 'hey this is a message to channel'
+      }));
+    }
+
+    function publishTest() {
+      socket.emit('publish', JSON.stringify({
+        namespace: 'dt',
+        channel: 'test',
+        message: 'hey this is a message to test'
+      }));
+    }
 
     /*
     socket.on('User_1208146', function (data) {
