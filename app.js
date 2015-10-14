@@ -4,12 +4,11 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
-/*/ redis cache
+// redis cache
 var pub = require('redis').createClient(6379,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: false});
 var sub = require('redis').createClient(6379,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: false});
 var redis = require('socket.io-redis');
 io.adapter(redis({pubClient: pub, subClient: sub}));
-*/
 
 var port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
@@ -87,8 +86,15 @@ function handleConnection(_socket) {
   });
 
   _socket.on('publish', function(data) {
-    data = JSON.parse(data);
-    publish(data.namespace, data.channel, data.message);
+    try {
+      //console.log('trying to publish with data: ' + data);
+      //console.log('Publish — namespace: ' + data.namespace + " — channel: " + data.channel + " — message: " + data.message);
+      publish(data.namespace, data.channel, data.message);
+    }
+    catch (e) {
+      console.log("unable to publish message");
+      console.log(e);
+    }
   });
 }
 
