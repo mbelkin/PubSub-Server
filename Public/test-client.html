@@ -21,10 +21,10 @@
 
   
     var socket = io.connect('http://localhost:3000/dt');
-    //var socket = io.connect('http://pubsub-server.azurewebsites.net/dt', {transports: ['websocket']});
+    //var socket = io.connect('http://pubsub-server.azurewebsites.net/dt');//, {transports: ['websocket']});
 
     // let's assume that the client page, once rendered, knows what room it wants to join
-    var channel = "User_1208146";
+    var channel = "User_680";
 
     socket.on('connect', function() {
        // Connected, let's sign-up for to receive messages for this room
@@ -60,7 +60,7 @@
     function publishChannel() {
       socket.emit('publish', JSON.stringify({
         namespace: 'dt',
-        channel: 'User_1208146',
+        channel: channel,
         message: 'hey this is a message to channel'
       }));
     }

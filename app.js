@@ -4,11 +4,12 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
-// redis cache
+/*/ redis cache
 var pub = require('redis').createClient(6379,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: false});
 var sub = require('redis').createClient(6379,'dt.redis.cache.windows.net', {auth_pass: 'FQ17dnac/On+e55ZoijQ6xtwFexSZwoihQGeIE/duLA=', return_buffers: false});
 var redis = require('socket.io-redis');
 io.adapter(redis({pubClient: pub, subClient: sub}));
+*/
 
 var port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
